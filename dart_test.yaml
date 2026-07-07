@@ -1,0 +1,21 @@
+# Default test target is the VM. Web tests run explicitly with -p chrome.
+#
+#   dart test                                            # VM batteries + native suites
+#   dart test -p chrome test/runners/web_runner_test.dart  # every battery in real Chrome
+#
+# Or use the Makefile:
+#   make test-unit  # VM
+#   make test-web   # Chrome
+#   make check      # the full gate
+#
+# The web runner is pure js-interop against real IndexedDB — no Flutter,
+# no dart:ui — so plain `dart test` runs it anywhere Chrome exists.
+
+platforms: [vm]
+
+# On CI (Chrome for Testing), --no-sandbox is required because the SUID
+# sandbox binary isn't included. Locally this flag is harmless.
+override_platforms:
+  chrome:
+    settings:
+      arguments: --no-sandbox --disable-gpu
