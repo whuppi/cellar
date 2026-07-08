@@ -1,5 +1,5 @@
 name: cellar
-version: 0.0.0
+version: 1.0.0-dev.0
 description: >-
   Cross-platform object storage for Dart and Flutter — one API over the
   filesystem, IndexedDB, or your own backend. Partitions, lifecycle

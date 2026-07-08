@@ -64,7 +64,7 @@ Pure Dart: no Flutter SDK, no plugins. The same package runs in a phone app, a d
 
 ```yaml
 dependencies:
-  cellar:
+  cellar: ^1.0.0-dev.0
 ```
 
 No platform setup, no permissions, no per-platform Dart.
