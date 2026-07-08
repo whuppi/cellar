@@ -1,5 +1,5 @@
 name: cellar
-version: 0.0.0
+version: 1.0.0
 description: >-
   Cross-platform file and data storage for Dart and Flutter. Save, read,
   stream, and cache with one API on every platform — auto-cleanup,
