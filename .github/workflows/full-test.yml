@@ -91,6 +91,14 @@ jobs:
           - { name: "pkg: Web (macos-arm64) [P]",  runner: macos-14,            make: test-web, timeout: 30, chrome: true, portability: true }
           - { name: "pkg: Web (win-x64) [P]",      runner: windows-2025-vs2026, make: test-web, timeout: 40, chrome: true, portability: true }
 
+          # ── CLI example (int) + compiled executable (verify) ──
+          - { name: "int: CLI example (ubuntu-x64)",   runner: ubuntu-24.04,        make: test-example, timeout: 15 }
+          - { name: "int: CLI example (macos-arm64)",  runner: macos-14,            make: test-example, timeout: 15 }
+          - { name: "int: CLI example (win-x64)",      runner: windows-2025-vs2026, make: test-example, timeout: 20 }
+          - { name: "verify: Compile exe (ubuntu-x64)",  runner: ubuntu-24.04,        make: verify-example, timeout: 15 }
+          - { name: "verify: Compile exe (macos-arm64)", runner: macos-14,            make: verify-example, timeout: 15 }
+          - { name: "verify: Compile exe (win-x64)",     runner: windows-2025-vs2026, make: verify-example, timeout: 20 }
+
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: ${{ matrix.timeout }}
@@ -113,16 +121,8 @@ jobs:
         if: steps.filter.outputs.match == 'true'
         with:
           make-target: ${{ matrix.make }}
-          java: ${{ matrix.java || 'false' }}
           chrome: ${{ matrix.chrome || 'false' }}
           headless-display: ${{ matrix.headless-display || 'false' }}
-          hw-accel: ${{ matrix.hw-accel || 'false' }}
-          gradle-cache: ${{ matrix.gradle-cache || 'false' }}
-          xcode-cache: ${{ matrix.xcode-cache || 'false' }}
-          xcode-cache-target: ${{ matrix.xcode-cache-target || '' }}
-          pods-cache: ${{ matrix.pods-cache || 'false' }}
-          emulator: ${{ matrix.emulator || 'false' }}
-          simulator: ${{ matrix.simulator || 'false' }}
       - name: Upload test results
         if: always() && steps.filter.outputs.match == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

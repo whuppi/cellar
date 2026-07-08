@@ -30,7 +30,7 @@ dependencies:
   ffi: ^2.1.0
 
   # Annotations (@immutable, @visibleForTesting)
-  meta: ^1.15.0
+  meta: ^1.16.0
 
   # Web APIs — IndexedDB backend + Blob-URL materialization
   web: ^1.1.0
@@ -38,7 +38,7 @@ dependencies:
 dev_dependencies:
   # Test runner — VM suites and the Chrome web runner both execute
   # under `dart test`
-  test: ^1.25.0
+  test: ^1.31.0
 
   # Lint rules
   lints: ^6.0.0

@@ -13,7 +13,7 @@ VERBOSE := $(if $(CI),--verbose,)
 
 .PHONY: check hooks \
         analyze analyze-floor lint-shell platforms format test-guards \
-        test test-unit test-web \
+        test test-unit test-web test-example verify-example \
         clean
 
 # ═══════════════════════════════════════════════════════════════════
@@ -141,6 +141,20 @@ test-unit:
 	@echo "=== Unit: VM (batteries + conformance + native suites) ==="
 	@mkdir -p $(TEST_RESULTS_DIR)
 	$(DART) test $(TIMEOUT) -p vm --file-reporter json:$(TEST_RESULTS_DIR)/unit.json
+
+# The example is the integration surface for a pure-Dart package: run it
+# as a real program on a real OS (int tier), and prove a shipping binary
+# links against the package (verify tier). CI runs both on Linux, macOS,
+# and Windows runners.
+test-example:
+	@$(DART) example/main.dart
+	@echo "✓ CLI example ran clean"
+
+verify-example:
+	@mkdir -p build
+	@case "$$(uname -s)" in MINGW*|MSYS*|CYGWIN*) out=build/example_cli.exe ;; *) out=build/example_cli ;; esac; \
+	$(DART) compile exe example/main.dart -o "$$out" && "./$$out" && \
+	echo "✓ compiled release executable runs against cellar ($$out)"
 
 test-web:
 	@echo "=== Web: batteries + IndexedDB + Blob in real Chrome (dart test) ==="
