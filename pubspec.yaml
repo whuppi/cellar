@@ -2,8 +2,8 @@ name: cellar
 version: 0.0.0
 description: >-
   Cross-platform object storage for Dart and Flutter — one API over the
-  filesystem, IndexedDB, or your own backend. Partitions, lifecycle
-  eviction, tenant scoping, BYO encryption, streaming I/O, materialize.
+  filesystem, IndexedDB, or your own backend. Partitions, lifecycle,
+  encryption, streaming.
 homepage: https://github.com/whuppi/cellar
 repository: https://github.com/whuppi/cellar
 issue_tracker: https://github.com/whuppi/cellar/issues
