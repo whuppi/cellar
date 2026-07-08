@@ -1,3 +1,20 @@
+<!--
+  Banner stays <picture> for GitHub's dark/light rendering. pub.dev strips
+  <picture> when sanitizing the README and falls back to the inner <img>
+  (the light variant) — which renders fine there. The heavy *-3x.png
+  sources stay tracked in git; only the optimized *-web-min.webp files
+  ship in the pub archive (see .pubignore). Drop the <picture> wrapper
+  once pub.dev renders it. Tracking: dart-lang/pub-dev#5923.
+-->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"  srcset="assets/cellar-banner-dark-web-min.webp">
+    <source media="(prefers-color-scheme: light)" srcset="assets/cellar-banner-light-web-min.webp">
+    <img alt="cellar — cross-platform object storage for Dart & Flutter"
+         src="assets/cellar-banner-light-web-min.webp" width="100%">
+  </picture>
+</p>
+
 <p align="center">
   <a href="https://pub.dev/packages/cellar"><img src="https://img.shields.io/pub/v/cellar.svg" alt="pub package"></a>
   <a href="https://pub.dev/packages/cellar/score"><img src="https://img.shields.io/pub/likes/cellar" alt="likes"></a>

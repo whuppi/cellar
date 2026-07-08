@@ -17,13 +17,8 @@ topics:
   - indexeddb
   - cross-platform
 
-# Not published yet — this line goes away when the repo opens and the
-# release tooling takes over. Consumed as a pinned submodule by
-# cellar_flutter (the Flutter front door) and, through it, sewali + bokumi.
-publish_to: none
-
 environment:
-  sdk: ">=3.11.0-0 <4.0.0"  # -0 floor: the pinned fvm SDK is a 3.11 beta
+  sdk: ">=3.11.0 <4.0.0"
 
 # Pure Dart on purpose — no Flutter SDK, no plugins. Flutter apps use
 # package:cellar_flutter, which resolves storage roots via path_provider
