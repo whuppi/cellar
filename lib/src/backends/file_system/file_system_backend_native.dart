@@ -280,9 +280,9 @@ class FileSystemBackend with DisposeGuard implements StorageBackend {
       '$_baseDir/${prefix.substring(0, prefix.lastIndexOf('/') + 1)}',
     );
     if (!await parent.exists()) return;
-    final fullPrefix = '$_baseDir/$prefix';
+    final fullPrefix = _keyForm('$_baseDir/$prefix');
     await for (final entity in parent.list(followLinks: false)) {
-      if (!entity.path.startsWith(fullPrefix)) continue;
+      if (!_keyForm(entity.path).startsWith(fullPrefix)) continue;
       if (entity is File) {
         await _os.deleteFile(entity);
       } else if (entity is Directory) {
@@ -405,6 +405,12 @@ class FileSystemBackend with DisposeGuard implements StorageBackend {
 
   // ── Internal: key listing (excludes .meta.json sidecars + tombstones) ──
 
+  /// Platform path → key form. Directory.list returns `\`-separated
+  /// paths on Windows; keys are always `/`-separated (the grammar forbids
+  /// `\`), so both prefix filtering and key reconstruction compare in
+  /// key form.
+  String _keyForm(String path) => path.replaceAll('\\', '/');
+
   bool _isUserFile(String path) {
     if (path.endsWith('.meta.json')) return false;
     if (path.contains(tombstoneSuffix)) return false;
@@ -422,16 +428,15 @@ class FileSystemBackend with DisposeGuard implements StorageBackend {
       '$_baseDir/${prefix.substring(0, prefix.lastIndexOf('/') + 1)}',
     );
     if (!await parent.exists()) return [];
-    final fullPrefix = '$_baseDir/$prefix';
+    final fullPrefix = _keyForm('$_baseDir/$prefix');
     final keys = <String>[];
     await for (final entity in parent.list(
       recursive: true,
       followLinks: false,
     )) {
-      if (entity is File &&
-          entity.path.startsWith(fullPrefix) &&
-          _isUserFile(entity.path)) {
-        keys.add(entity.path.substring(_baseDir.length + 1));
+      final path = _keyForm(entity.path);
+      if (entity is File && path.startsWith(fullPrefix) && _isUserFile(path)) {
+        keys.add(path.substring(fullPrefix.length - prefix.length));
       }
     }
     return keys;

@@ -1,11 +1,9 @@
 name: cellar
 version: 0.0.0
 description: >-
-  Cross-platform object storage for Dart and Flutter. One API over the
-  native filesystem, IndexedDB, or any backend you implement: named
-  partitions with lifecycle eviction, tenant key prefixing, transparent
-  bring-your-own encryption, true streaming I/O, and platform-local
-  materialization for FFI and browser APIs.
+  Cross-platform file and data storage for Dart and Flutter. Save, read,
+  stream, and cache with one API on every platform — auto-cleanup,
+  encryption, custom backends.
 homepage: https://github.com/whuppi/cellar
 repository: https://github.com/whuppi/cellar
 issue_tracker: https://github.com/whuppi/cellar/issues
@@ -13,17 +11,12 @@ issue_tracker: https://github.com/whuppi/cellar/issues
 topics:
   - storage
   - cache
+  - files
   - encryption
-  - indexeddb
   - cross-platform
 
-# Not published yet — this line goes away when the repo opens and the
-# release tooling takes over. Consumed as a pinned submodule by
-# cellar_flutter (the Flutter front door) and, through it, sewali + bokumi.
-publish_to: none
-
 environment:
-  sdk: ">=3.11.0-0 <4.0.0"  # -0 floor: the pinned fvm SDK is a 3.11 beta
+  sdk: ">=3.11.0 <4.0.0"
 
 # Pure Dart on purpose — no Flutter SDK, no plugins. Flutter apps use
 # package:cellar_flutter, which resolves storage roots via path_provider
@@ -35,7 +28,7 @@ dependencies:
   ffi: ^2.1.0
 
   # Annotations (@immutable, @visibleForTesting)
-  meta: ^1.15.0
+  meta: ^1.16.0
 
   # Web APIs — IndexedDB backend + Blob-URL materialization
   web: ^1.1.0
@@ -43,7 +36,7 @@ dependencies:
 dev_dependencies:
   # Test runner — VM suites and the Chrome web runner both execute
   # under `dart test`
-  test: ^1.25.0
+  test: ^1.31.0
 
   # Lint rules
   lints: ^6.0.0

@@ -1,3 +1,20 @@
+<!--
+  Banner stays <picture> for GitHub's dark/light rendering. pub.dev strips
+  <picture> when sanitizing the README and falls back to the inner <img>
+  (the light variant) — which renders fine there. The heavy *-3x.png
+  sources stay tracked in git; only the optimized *-web-min.webp files
+  ship in the pub archive (see .pubignore). Drop the <picture> wrapper
+  once pub.dev renders it. Tracking: dart-lang/pub-dev#5923.
+-->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"  srcset="assets/cellar-banner-dark-web-min.webp">
+    <source media="(prefers-color-scheme: light)" srcset="assets/cellar-banner-light-web-min.webp">
+    <img alt="cellar — cross-platform object storage for Dart & Flutter"
+         src="assets/cellar-banner-light-web-min.webp" width="100%">
+  </picture>
+</p>
+
 <p align="center">
   <a href="https://pub.dev/packages/cellar"><img src="https://img.shields.io/pub/v/cellar.svg" alt="pub package"></a>
   <a href="https://pub.dev/packages/cellar/score"><img src="https://img.shields.io/pub/likes/cellar" alt="likes"></a>
@@ -6,7 +23,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT"></a>
 </p>
 
-Cross-platform object storage for Dart & Flutter. Bytes in, bytes out, by key — over the native filesystem, IndexedDB, or your own backend. Named partitions with self-cleaning lifecycle rules, tenant scoping, bring-your-own encryption, true streaming I/O, and platform-local handles for non-Dart consumers.
+Cross-platform storage for files and data in Dart & Flutter. Save, read, stream, and cache by key — over the native filesystem, IndexedDB, or your own backend. Partitions with self-cleaning rules, per-user scoping, bring-your-own encryption, and streaming that never loads a whole file into memory.
 
 Pure Dart: no Flutter SDK, no plugins. The same package runs in a phone app, a desktop tool, a CLI, and a server. Writes are atomic, errors are typed values, streams never buffer a whole object, and nothing in your code ever branches on platform.
 
@@ -50,9 +67,9 @@ dependencies:
   cellar:
 ```
 
-Nothing else — no platform setup, no permissions, no per-platform Dart.
+No platform setup, no permissions, no per-platform Dart.
 
-One rule to know up front: **the core never guesses where your data lives.** You tell it, explicitly — a `roots:` pair (or a single `atPath` directory) on native, nothing at all on web (IndexedDB). Flutter apps skip even that: [`cellar_flutter`](https://github.com/whuppi/cellar_flutter)'s `openCellar()` resolves the locations for you on every platform. No conventions, no environment guessing, no path that appeared on its own.
+One rule up front: **the core never guesses where your data lives.** You pass a `roots:` pair (or a single `atPath` directory) on native; web needs nothing (IndexedDB). Flutter apps skip even that — [`cellar_flutter`](https://github.com/whuppi/cellar_flutter)'s `openCellar()` resolves the locations on every platform.
 
 ---
 
@@ -80,7 +97,7 @@ await cellar.delete('photos/sunset');
 await cellar.close(); // on shutdown, profile switch, etc.
 ```
 
-That's the shape of every call: a `/`-separated key in, bytes or metadata out. `write`, `read`, `head`, `list`, `copy`, `move`, `materialize` — same shape, a different verb.
+That's the shape of every call: a `/`-separated key in, bytes or metadata out — `write`, `read`, `head`, `list`, `copy`, `move`, `materialize`.
 
 Same code on every platform: native lands in real files under the app's private directory, web lands in IndexedDB (large objects chunked automatically, so a 1 GB blob doesn't OOM the tab).
 
@@ -112,7 +129,7 @@ Listing and bulk deletion use **raw string prefixes**, S3-style: `list('photos')
 
 ### Partitions
 
-A partition is a **named category of data with optional rules attached** — permanent vs cache vs scratch, backed-up vs excluded. Apps that don't need them just use the default partition implicitly.
+A partition is a **named category of data with optional rules attached** — permanent vs cache vs scratch, backed-up vs excluded. Apps that don't need them use the default partition implicitly.
 
 ```dart
 final cellar = Cellar(
@@ -196,7 +213,6 @@ await cellar.deletePrefix('docs/');              // bulk delete by prefix
 
 The full facade, all the same shape: `write` / `writeStream`, `read` / `readStream` / `readRange`, `head`, `exists`, `list` / `listKeys`, `delete` / `deletePrefix`, `copy`, `move`, `copyAcrossPartitions` / `moveAcrossPartitions`, `wipePartition`, `movePartition`, `updateMetadata`, `materialize`, `totalSize`, `fileSize`.
 
-> Doing several operations on related objects? Give them a shared key prefix — `list`, `listKeys`, and `deletePrefix` all work on it in one call.
 
 ### Stream
 
@@ -217,7 +233,7 @@ await for (final chunk in cellar.readStream('models/llama-7b.gguf')) { /* … */
 final slice = await cellar.readRange('audio/song.mp3', start: 44100, length: 8192);
 ```
 
-Memory stays constant regardless of object size, and `readRange` touches only the overlapping chunks — encrypted and chunked objects included, never a full-object read in disguise.
+Memory stays constant regardless of object size, and `readRange` touches only the overlapping chunks — encrypted and chunked objects included.
 
 <details>
 <summary><b>🧩 wait — what does "atomic" actually mean here?</b></summary>
@@ -244,7 +260,7 @@ Self-cleaning partitions. Rules run identically on every backend; a background t
 'scratch': PartitionConfig(lifecycle: Lifecycle.scratch()), // wiped on every open()
 ```
 
-Eviction failures surface through the cellar's `onEvictionError` callback and never wedge the pass — one stuck object can't stop the sweep.
+Eviction failures surface through the cellar's `onEvictionError` callback and never wedge the pass.
 
 <details>
 <summary><b>🧩 the osManaged flag — letting the OS help</b></summary>
@@ -253,7 +269,7 @@ Eviction failures surface through the cellar's `onEvictionError` callback and ne
 
 `Lifecycle.cache` defaults to `osManaged: true`: the partition is placed where the OS may *also* evict under storage pressure. That's real on iOS and Android (the cache directory's documented contract) and a documented no-op on desktop, web, and `Cellar.atPath` — desktop OSes don't sweep caches, IndexedDB evicts per-origin, and a path you brought is yours.
 
-Your `maxBytes` / `maxAge` rules run everywhere regardless. OS eviction is a bonus on the two platforms that offer it — never the load-bearing story.
+Your `maxBytes` / `maxAge` rules run everywhere regardless; OS eviction is a bonus on the two platforms that offer it.
 
 </details>
 
@@ -289,7 +305,7 @@ Encrypted objects are **self-describing** — a magic header carries the nonce, 
 
 A missing key at read time is `EncryptionKeyMissingError` — never silently-returned ciphertext. And `copy` re-encrypts when source and destination resolve to different keys, so a cross-tenant copy can't produce bytes the destination can't read.
 
-The [example app](https://github.com/whuppi/cellar_flutter/tree/dev/example) contains a complete working `FileEncryptor` — what you see there is exactly what implementing the seam takes.
+The [example app](https://github.com/whuppi/cellar_flutter/tree/dev/example) contains a complete working `FileEncryptor` — implementing the seam takes exactly what you see there.
 
 </details>
 
@@ -331,7 +347,7 @@ final cellar = Cellar.atPath(
 await cellar.open();
 ```
 
-Native-only by design — it throws `UnsupportedError` at `open()` on web, so cross-platform misuse fails loud, not weird.
+Native-only by design — it throws `UnsupportedError` at `open()` on web, so cross-platform misuse fails loud.
 
 ### Bring your own backend
 
@@ -361,7 +377,7 @@ A brand-new substrate (GCS, DynamoDB, an in-memory test double) is one class imp
 
 ## Error handling
 
-Failures are a sealed hierarchy — pattern-match the ones you can act on, and nothing is ever silently swallowed:
+Failures are a sealed hierarchy — pattern-match the ones you can act on:
 
 ```dart
 try {
@@ -408,21 +424,19 @@ Flutter apps don't pick paths at all: [`cellar_flutter`](https://github.com/whup
 
 ## Not in the box
 
-What the shipped package doesn't do, and what to reach for in the meantime. Full per-capability status in the [capability roadmap](docs/CAPABILITY_ROADMAP.md).
+Scope edges, each with a reasoned WONT_DO row in the [capability roadmap](docs/CAPABILITY_ROADMAP.md):
 
-- **Structured records / queries.** Cellar lists by key prefix — no indexes, no search. For records and queries use a database ([`drift`](https://pub.dev/packages/drift), [`hive`](https://pub.dev/packages/hive)); keep an index there that maps queries → cellar keys.
-- **Key-value preferences.** For small string KV, [`shared_preferences`](https://pub.dev/packages/shared_preferences) is the right tool — cellar is for bytes.
-- **Per-key TTL.** Lifecycle rules are per-partition. Give expiring data its own partition, or design key names so eviction can target by prefix.
-- **User-visible files** (Files app, Downloads, share sheets, pickers). Cellar is an app-private store — for "give a file to the user" or "let the user pick one," use [`device_io`](https://pub.dev/packages/device_io); cellar stores the bytes those flows produce.
-- **Sync, and first-party remote backends.** Two cellars don't auto-sync, and materialize's web URLs are local-session Blob URLs, not public links — serving assets to other users is CDN/server territory. Cellar deliberately ships no remote backend: `StorageBackend` + the conformance battery are the offering — implement one over your remote of choice and run the same exam the built-ins pass. A first-party remote satellite package returns if a real consumer's read/write patterns drive it.
-- **Compression.** Deliberate: apps that store compressible data do it in two lines (`gzip.encode` before write) and own the trade, media is already compressed, and transparent compression would break the O(range) `readRange` promise. One rule to know: compress *before* encrypting — ciphertext doesn't compress.
-- **Locking.** Same-key write serialization is your app's job; reads are concurrent-safe with reads.
+- **Queries / indexes** — use a database ([`drift`](https://pub.dev/packages/drift), [`hive`](https://pub.dev/packages/hive)) and map queries → cellar keys.
+- **Small key-value prefs** — [`shared_preferences`](https://pub.dev/packages/shared_preferences); cellar is for bytes.
+- **Per-key TTL** — give expiring data its own partition (`maxAge`), or evict by key prefix.
+- **User-visible files** (Files app, Downloads, pickers, share sheets) — [`device_io`](https://pub.dev/packages/device_io); cellar stores the bytes those flows produce.
+- **Sync and remote backends** — implement `StorageBackend` over your remote of choice and run the same conformance battery the built-ins pass.
+- **Compression** — `gzip.encode` before write (and before encrypting — ciphertext doesn't compress).
+- **Locking** — serialize same-key writes in your app; reads are concurrent-safe.
 
 ---
 
 ## Docs
-
-The README covers the everyday stuff. wanna go deeper?
 
 | Doc | What's inside |
 |---|---|

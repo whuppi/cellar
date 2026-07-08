@@ -7,3 +7,9 @@ Makefile
 docs/
 .githooks/
 dart_test.yaml
+
+# Banner: ship only the optimized *-web-min.webp the README embeds. The
+# heavy *-3x.png sources stay tracked in git (org-quality preservation)
+# but out of the published download — nothing references them on pub.dev.
+assets/cellar-banner-dark-3x.png
+assets/cellar-banner-light-3x.png

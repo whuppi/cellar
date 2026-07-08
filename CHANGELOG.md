@@ -59,3 +59,7 @@ CONTENT RULES (never change)
 -->
 
 <!-- Add new versions below, newest first. -->
+
+## 1.0.0
+
+First stable release — cross-platform file and data storage for Dart & Flutter.

@@ -95,8 +95,8 @@ maintenance recipes see [`UPDATING.md`](UPDATING.md).
 | Strict lints + zero-issue analyzer | DONE | `analyze_core.sh` with `--fatal-infos`; suppression comments banned |
 | Makefile gates (format / analyze / analyze-floor / platforms / lint-shell / test-guards) | DONE | Shared gate scripts stamped from whuppi/ci |
 | Batteries × runners test suite | DONE | 385 VM + 325 real-Chrome executions; shape in `ARCHITECTURE.md`, the test-architecture section |
-| Runnable pure-Dart example (`example/main.dart`) | DONE | Full lifecycle as a CLI run; the 7-tab Flutter showcase (journeys + smoke) lives with `cellar_flutter` |
+| Runnable pure-Dart example (`example/main.dart`) | DONE | Full lifecycle as a CLI run; CI runs it (int) and its `dart compile exe` build (verify) per OS; the 7-tab Flutter showcase (journeys + smoke) lives with `cellar_flutter` |
 | CI via the shared workflow repo | BUILDING | Stock single-package callers (fast PR gate + label-triggered full-test + release lanes); first real run happens at repo go-live |
 | Repo go-live (GitHub whuppi/cellar, branch protection, release train) | DONE | Live: dev (default) + prod, device_io-parity protection (2 approvals + codeowners + the three required checks), dev/prod environments (prod release gated on maintainer review), labels seeded, maintainer + slopfairy team access. cellar_flutter is its own live repo pinning this one as a submodule |
 | Publish to pub.dev | PLANNED | Maintainer-gated; plausibly clears the publication bar (cellar_flutter publishes from its own repo) |
-| README banner image | PLANNED | Needs a designed asset (the golds ship a `<picture>` dark/light banner) |
+| README banner image | DONE | Dark/light `<picture>` pair in `assets/` with the pub.dev flatten comment |
