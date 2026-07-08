@@ -153,7 +153,7 @@ test-example:
 verify-example:
 	@mkdir -p build
 	@case "$$(uname -s)" in MINGW*|MSYS*|CYGWIN*) out=build/example_cli.exe ;; *) out=build/example_cli ;; esac; \
-	$(DART) compile exe example/main.dart -o "$$out" >/dev/null && "./$$out" >/dev/null && \
+	$(DART) compile exe example/main.dart -o "$$out" && "./$$out" && \
 	echo "✓ compiled release executable runs against cellar ($$out)"
 
 test-web:
