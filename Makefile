@@ -13,7 +13,7 @@ VERBOSE := $(if $(CI),--verbose,)
 
 .PHONY: check hooks \
         analyze analyze-floor lint-shell platforms format test-guards \
-        test test-unit test-web \
+        test test-unit test-web test-example verify-example \
         clean
 
 # ═══════════════════════════════════════════════════════════════════
