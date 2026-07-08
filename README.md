@@ -424,15 +424,15 @@ Flutter apps don't pick paths at all: [`cellar_flutter`](https://github.com/whup
 
 ## Not in the box
 
-What the shipped package doesn't do, and what to reach for in the meantime. Full per-capability status in the [capability roadmap](docs/CAPABILITY_ROADMAP.md).
+Scope edges, each with a reasoned WONT_DO row in the [capability roadmap](docs/CAPABILITY_ROADMAP.md):
 
-- **Structured records / queries.** Cellar lists by key prefix — no indexes, no search. For records and queries use a database ([`drift`](https://pub.dev/packages/drift), [`hive`](https://pub.dev/packages/hive)); keep an index there that maps queries → cellar keys.
-- **Key-value preferences.** For small string KV, [`shared_preferences`](https://pub.dev/packages/shared_preferences) is the right tool — cellar is for bytes.
-- **Per-key TTL.** Lifecycle rules are per-partition. Give expiring data its own partition, or design key names so eviction can target by prefix.
-- **User-visible files** (Files app, Downloads, share sheets, pickers). Cellar is an app-private store — for "give a file to the user" or "let the user pick one," use [`device_io`](https://pub.dev/packages/device_io); cellar stores the bytes those flows produce.
-- **Sync, and first-party remote backends.** Two cellars don't auto-sync, and materialize's web URLs are local-session Blob URLs, not public links — serving assets to other users is CDN/server territory. Cellar deliberately ships no remote backend: `StorageBackend` + the conformance battery are the offering — implement one over your remote of choice and run the same exam the built-ins pass. A first-party remote satellite package returns if a real consumer's read/write patterns drive it.
-- **Compression.** Deliberate: apps that store compressible data do it in two lines (`gzip.encode` before write) and own the trade, media is already compressed, and transparent compression would break the O(range) `readRange` promise. One rule to know: compress *before* encrypting — ciphertext doesn't compress.
-- **Locking.** Same-key write serialization is your app's job; reads are concurrent-safe with reads.
+- **Queries / indexes** — use a database ([`drift`](https://pub.dev/packages/drift), [`hive`](https://pub.dev/packages/hive)) and map queries → cellar keys.
+- **Small key-value prefs** — [`shared_preferences`](https://pub.dev/packages/shared_preferences); cellar is for bytes.
+- **Per-key TTL** — give expiring data its own partition (`maxAge`), or evict by key prefix.
+- **User-visible files** (Files app, Downloads, pickers, share sheets) — [`device_io`](https://pub.dev/packages/device_io); cellar stores the bytes those flows produce.
+- **Sync and remote backends** — implement `StorageBackend` over your remote of choice and run the same conformance battery the built-ins pass.
+- **Compression** — `gzip.encode` before write (and before encrypting — ciphertext doesn't compress).
+- **Locking** — serialize same-key writes in your app; reads are concurrent-safe.
 
 ---
 
