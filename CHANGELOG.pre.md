@@ -62,12 +62,4 @@ CONTENT RULES (never change)
 
 ## 1.0.0-dev.0
 
-First release — cross-platform object storage for Dart & Flutter, built
-from the ground up.
-
-- **API:** one 13-method `StorageBackend` contract behind a `Cellar` facade — write/read/head/list/copy/materialize by `/`-separated key; three constructors (platform default, `atPath`, `withBackends`)
-- **Backends:** native filesystem (dart:io) and IndexedDB (package:web), conformance-pinned to identical behavior on the VM and in real Chrome; bring your own by implementing the contract
-- **Decorators:** chunking (fixed-size records + manifest) and bring-your-own-crypto encryption (streaming chunks, per-chunk MACs, self-describing header)
-- **Facade:** named partitions with lifecycle eviction (`maxBytes` / `maxAge` / `wipeOnOpen` / `osManaged`), `keyPrefix` tenant scoping, cross-partition copy/move, OS backup exclusion (`osBackup: false`)
-- **Safety:** atomic writes on every backend, typed `StorageError` family, dispose guards, no internal locking (documented contract)
-- **Platforms:** iOS, Android, macOS, Windows, Linux, web, servers/CLIs — pure Dart, no Flutter SDK, no plugins; native roots are caller-supplied (Flutter apps use `cellar_flutter`)
+First release — cross-platform object storage for Dart & Flutter.
