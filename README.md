@@ -67,9 +67,9 @@ dependencies:
   cellar:
 ```
 
-Nothing else — no platform setup, no permissions, no per-platform Dart.
+No platform setup, no permissions, no per-platform Dart.
 
-One rule to know up front: **the core never guesses where your data lives.** You tell it, explicitly — a `roots:` pair (or a single `atPath` directory) on native, nothing at all on web (IndexedDB). Flutter apps skip even that: [`cellar_flutter`](https://github.com/whuppi/cellar_flutter)'s `openCellar()` resolves the locations for you on every platform. No conventions, no environment guessing, no path that appeared on its own.
+One rule up front: **the core never guesses where your data lives.** You pass a `roots:` pair (or a single `atPath` directory) on native; web needs nothing (IndexedDB). Flutter apps skip even that — [`cellar_flutter`](https://github.com/whuppi/cellar_flutter)'s `openCellar()` resolves the locations on every platform.
 
 ---
 
@@ -97,7 +97,7 @@ await cellar.delete('photos/sunset');
 await cellar.close(); // on shutdown, profile switch, etc.
 ```
 
-That's the shape of every call: a `/`-separated key in, bytes or metadata out. `write`, `read`, `head`, `list`, `copy`, `move`, `materialize` — same shape, a different verb.
+That's the shape of every call: a `/`-separated key in, bytes or metadata out — `write`, `read`, `head`, `list`, `copy`, `move`, `materialize`.
 
 Same code on every platform: native lands in real files under the app's private directory, web lands in IndexedDB (large objects chunked automatically, so a 1 GB blob doesn't OOM the tab).
 
@@ -129,7 +129,7 @@ Listing and bulk deletion use **raw string prefixes**, S3-style: `list('photos')
 
 ### Partitions
 
-A partition is a **named category of data with optional rules attached** — permanent vs cache vs scratch, backed-up vs excluded. Apps that don't need them just use the default partition implicitly.
+A partition is a **named category of data with optional rules attached** — permanent vs cache vs scratch, backed-up vs excluded. Apps that don't need them use the default partition implicitly.
 
 ```dart
 final cellar = Cellar(
@@ -213,7 +213,6 @@ await cellar.deletePrefix('docs/');              // bulk delete by prefix
 
 The full facade, all the same shape: `write` / `writeStream`, `read` / `readStream` / `readRange`, `head`, `exists`, `list` / `listKeys`, `delete` / `deletePrefix`, `copy`, `move`, `copyAcrossPartitions` / `moveAcrossPartitions`, `wipePartition`, `movePartition`, `updateMetadata`, `materialize`, `totalSize`, `fileSize`.
 
-> Doing several operations on related objects? Give them a shared key prefix — `list`, `listKeys`, and `deletePrefix` all work on it in one call.
 
 ### Stream
 
@@ -234,7 +233,7 @@ await for (final chunk in cellar.readStream('models/llama-7b.gguf')) { /* … */
 final slice = await cellar.readRange('audio/song.mp3', start: 44100, length: 8192);
 ```
 
-Memory stays constant regardless of object size, and `readRange` touches only the overlapping chunks — encrypted and chunked objects included, never a full-object read in disguise.
+Memory stays constant regardless of object size, and `readRange` touches only the overlapping chunks — encrypted and chunked objects included.
 
 <details>
 <summary><b>🧩 wait — what does "atomic" actually mean here?</b></summary>
@@ -261,7 +260,7 @@ Self-cleaning partitions. Rules run identically on every backend; a background t
 'scratch': PartitionConfig(lifecycle: Lifecycle.scratch()), // wiped on every open()
 ```
 
-Eviction failures surface through the cellar's `onEvictionError` callback and never wedge the pass — one stuck object can't stop the sweep.
+Eviction failures surface through the cellar's `onEvictionError` callback and never wedge the pass.
 
 <details>
 <summary><b>🧩 the osManaged flag — letting the OS help</b></summary>
@@ -270,7 +269,7 @@ Eviction failures surface through the cellar's `onEvictionError` callback and ne
 
 `Lifecycle.cache` defaults to `osManaged: true`: the partition is placed where the OS may *also* evict under storage pressure. That's real on iOS and Android (the cache directory's documented contract) and a documented no-op on desktop, web, and `Cellar.atPath` — desktop OSes don't sweep caches, IndexedDB evicts per-origin, and a path you brought is yours.
 
-Your `maxBytes` / `maxAge` rules run everywhere regardless. OS eviction is a bonus on the two platforms that offer it — never the load-bearing story.
+Your `maxBytes` / `maxAge` rules run everywhere regardless; OS eviction is a bonus on the two platforms that offer it.
 
 </details>
 
@@ -306,7 +305,7 @@ Encrypted objects are **self-describing** — a magic header carries the nonce, 
 
 A missing key at read time is `EncryptionKeyMissingError` — never silently-returned ciphertext. And `copy` re-encrypts when source and destination resolve to different keys, so a cross-tenant copy can't produce bytes the destination can't read.
 
-The [example app](https://github.com/whuppi/cellar_flutter/tree/dev/example) contains a complete working `FileEncryptor` — what you see there is exactly what implementing the seam takes.
+The [example app](https://github.com/whuppi/cellar_flutter/tree/dev/example) contains a complete working `FileEncryptor` — implementing the seam takes exactly what you see there.
 
 </details>
 
@@ -348,7 +347,7 @@ final cellar = Cellar.atPath(
 await cellar.open();
 ```
 
-Native-only by design — it throws `UnsupportedError` at `open()` on web, so cross-platform misuse fails loud, not weird.
+Native-only by design — it throws `UnsupportedError` at `open()` on web, so cross-platform misuse fails loud.
 
 ### Bring your own backend
 
@@ -378,7 +377,7 @@ A brand-new substrate (GCS, DynamoDB, an in-memory test double) is one class imp
 
 ## Error handling
 
-Failures are a sealed hierarchy — pattern-match the ones you can act on, and nothing is ever silently swallowed:
+Failures are a sealed hierarchy — pattern-match the ones you can act on:
 
 ```dart
 try {
@@ -438,8 +437,6 @@ What the shipped package doesn't do, and what to reach for in the meantime. Full
 ---
 
 ## Docs
-
-The README covers the everyday stuff. wanna go deeper?
 
 | Doc | What's inside |
 |---|---|
