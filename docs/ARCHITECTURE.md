@@ -304,7 +304,9 @@ accessors anywhere (dart2js has none); no empty dirs; no duplicate test
 filenames.
 
 This repo's `example/main.dart` is a runnable pure-Dart CLI walk of the
-full lifecycle. The Flutter showcase — the seven-tab example app, its
+full lifecycle — and the integration surface: CI runs it as a real
+program (`make test-example`) and as a compiled release executable
+(`make verify-example`) on Linux, macOS, and Windows runners. The Flutter showcase — the seven-tab example app, its
 host-VM journeys across six device profiles, and the per-platform
 integration smokes through the real path_provider — lives in the
 [cellar_flutter repo](https://github.com/whuppi/cellar_flutter), which

@@ -91,6 +91,14 @@ jobs:
           - { name: "pkg: Web (macos-arm64) [P]",  runner: macos-14,            make: test-web, timeout: 30, chrome: true, portability: true }
           - { name: "pkg: Web (win-x64) [P]",      runner: windows-2025-vs2026, make: test-web, timeout: 40, chrome: true, portability: true }
 
+          # ── CLI example (int) + compiled executable (verify) ──
+          - { name: "int: CLI example (ubuntu-x64)",   runner: ubuntu-24.04,        make: test-example, timeout: 15 }
+          - { name: "int: CLI example (macos-arm64)",  runner: macos-14,            make: test-example, timeout: 15 }
+          - { name: "int: CLI example (win-x64)",      runner: windows-2025-vs2026, make: test-example, timeout: 20 }
+          - { name: "verify: Compile exe (ubuntu-x64)",  runner: ubuntu-24.04,        make: verify-example, timeout: 15 }
+          - { name: "verify: Compile exe (macos-arm64)", runner: macos-14,            make: verify-example, timeout: 15 }
+          - { name: "verify: Compile exe (win-x64)",     runner: windows-2025-vs2026, make: verify-example, timeout: 20 }
+
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: ${{ matrix.timeout }}
