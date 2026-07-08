@@ -113,16 +113,8 @@ jobs:
         if: steps.filter.outputs.match == 'true'
         with:
           make-target: ${{ matrix.make }}
-          java: ${{ matrix.java || 'false' }}
           chrome: ${{ matrix.chrome || 'false' }}
           headless-display: ${{ matrix.headless-display || 'false' }}
-          hw-accel: ${{ matrix.hw-accel || 'false' }}
-          gradle-cache: ${{ matrix.gradle-cache || 'false' }}
-          xcode-cache: ${{ matrix.xcode-cache || 'false' }}
-          xcode-cache-target: ${{ matrix.xcode-cache-target || '' }}
-          pods-cache: ${{ matrix.pods-cache || 'false' }}
-          emulator: ${{ matrix.emulator || 'false' }}
-          simulator: ${{ matrix.simulator || 'false' }}
       - name: Upload test results
         if: always() && steps.filter.outputs.match == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
