@@ -435,9 +435,7 @@ class FileSystemBackend with DisposeGuard implements StorageBackend {
       followLinks: false,
     )) {
       final path = _keyForm(entity.path);
-      if (entity is File &&
-          path.startsWith(fullPrefix) &&
-          _isUserFile(path)) {
+      if (entity is File && path.startsWith(fullPrefix) && _isUserFile(path)) {
         keys.add(path.substring(fullPrefix.length - prefix.length));
       }
     }
