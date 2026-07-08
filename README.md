@@ -23,7 +23,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT"></a>
 </p>
 
-Cross-platform object storage for Dart & Flutter. Bytes in, bytes out, by key — over the native filesystem, IndexedDB, or your own backend. Named partitions with self-cleaning lifecycle rules, tenant scoping, bring-your-own encryption, true streaming I/O, and platform-local handles for non-Dart consumers.
+Cross-platform storage for files and data in Dart & Flutter. Save, read, stream, and cache by key — over the native filesystem, IndexedDB, or your own backend. Partitions with self-cleaning rules, per-user scoping, bring-your-own encryption, and streaming that never loads a whole file into memory.
 
 Pure Dart: no Flutter SDK, no plugins. The same package runs in a phone app, a desktop tool, a CLI, and a server. Writes are atomic, errors are typed values, streams never buffer a whole object, and nothing in your code ever branches on platform.
 
